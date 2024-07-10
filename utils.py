@@ -14,19 +14,25 @@ def timer(func):
     return timeit_wrapper
 
 
-class TimerV1:
-    def __init__(self, func):
-        self.func = func
+def time_all_class_methods(cls):
+    class Cls:
+        def __init__(self, *args, **kwargs):
+            self.instance = cls(*args, **kwargs)
 
-    def __call__(self, *args, **kwargs):
-        start_time = time.perf_counter()
-        try:
-            result = self.func(*args, **kwargs)
-        finally:
-            end_time = time.perf_counter()
-            elapsed_time = end_time - start_time
-            print(f"{self.func.__name__}: elapsed time: {elapsed_time:.6f} s")
-        return result
+        def __getattribute__(self, attribute_name):
+            try:
+                attribute = super().__getattribute__(attribute_name)
+            except AttributeError:
+                pass
+            else:
+                return attribute
+
+            attribute = self.instance.__getattribute__(attribute_name)
+            if callable(attribute):
+                return Timer(attribute)
+            else:
+                return attribute
+    return Cls
 
 
 class Timer:
@@ -72,22 +78,16 @@ class Timer:
         cls.stats = {}
 
 
-def time_all_class_methods(cls):
-    class Cls:
-        def __init__(self, *args, **kwargs):
-            self.instance = cls(*args, **kwargs)
+class TimerV1:
+    def __init__(self, func):
+        self.func = func
 
-        def __getattribute__(self, attribute_name):
-            try:
-                attribute = super().__getattribute__(attribute_name)
-            except AttributeError:
-                pass
-            else:
-                return attribute
-
-            attribute = self.instance.__getattribute__(attribute_name)
-            if callable(attribute):
-                return Timer(attribute)
-            else:
-                return attribute
-    return Cls
+    def __call__(self, *args, **kwargs):
+        start_time = time.perf_counter()
+        try:
+            result = self.func(*args, **kwargs)
+        finally:
+            end_time = time.perf_counter()
+            elapsed_time = end_time - start_time
+            print(f"{self.func.__name__}: elapsed time: {elapsed_time:.6f} s")
+        return result
