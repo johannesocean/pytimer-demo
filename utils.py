@@ -1,8 +1,5 @@
 import time
-import logging
 from functools import wraps
-
-logger = logging.getLogger(__name__)
 
 
 def timer(func):
@@ -79,3 +76,24 @@ class TimerV1:
                 f"total time: {self.total_time:.6f} s"
             )
         return result
+
+
+def time_all_class_methods(cls):
+    class Cls:
+        def __init__(self, *args, **kwargs):
+            self.instance = cls(*args, **kwargs)
+
+        def __getattribute__(self, attribute_name):
+            try:
+                attribute = super().__getattribute__(attribute_name)
+            except AttributeError:
+                pass
+            else:
+                return attribute
+
+            attribute = self.instance.__getattribute__(attribute_name)
+            if callable(attribute):
+                return Timer(attribute)
+            else:
+                return attribute
+    return Cls
