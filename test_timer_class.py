@@ -1,7 +1,7 @@
 import time
 import random
 
-from utils import Timer, time_all_class_methods
+from utils import Timer
 
 
 @Timer
@@ -16,26 +16,11 @@ def timer_class_test_func_2():
     time.sleep(random.uniform(1, 2))
 
 
-@time_all_class_methods
-class TimerClassTest:
-    def __init__(self, name):
-        self.name = name
-
-    def test_method(self, *args, **kwargs):
-        time.sleep(random.uniform(0, 1))
-
-    def test_method_2(self, *args, **kwargs):
-        time.sleep(random.uniform(0, 1))
-
-
 if __name__ == '__main__':
-    # timer_class_test_func_1()
-    # timer_class_test_func_2()
-    #
-    # timer_class_test_func_1()
-    # timer_class_test_func_2()
+    timer_class_test_func_1()
+    timer_class_test_func_2()
 
-    timer_class_test = TimerClassTest('timer_class_test')
-    timer_class_test.test_method_2()
-    timer_class_test.test_method()
+    timer_class_test_func_1()
+    timer_class_test_func_2()
+
     Timer.report()
