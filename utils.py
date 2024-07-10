@@ -3,6 +3,8 @@ from functools import wraps
 
 
 def timer(func):
+    """Decorator that times the execution of a function."""
+
     @wraps(func)
     def timeit_wrapper(*args, **kwargs):
         start_time = time.perf_counter()
@@ -15,6 +17,8 @@ def timer(func):
 
 
 def time_all_class_methods(cls):
+    """A class decorator that times the execution of all class methods."""
+
     class Cls:
         def __init__(self, *args, **kwargs):
             self.instance = cls(*args, **kwargs)
@@ -36,6 +40,10 @@ def time_all_class_methods(cls):
 
 
 class Timer:
+    """Decorator that times the execution of functions.
+
+    Reports the stats of all the decorated functions."""
+
     stats = {}
 
     def __init__(self, func):
